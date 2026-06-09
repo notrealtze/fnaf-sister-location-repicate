@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Export Godot iOS project
-        uses: dulvui/godot4-ios-export@v4
+        uses: dulvui/godot4-ios-export@v1
         with:
           godot-version: "4.3"
           working-directory: "."
