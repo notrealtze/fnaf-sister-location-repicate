@@ -25,28 +25,22 @@ jobs:
           unzip -q Godot_v4.3-stable_export_templates.tpz
           mv templates/* ~/Library/Application\ Support/Godot/export_templates/4.3.stable/
 
-      - name: Export Xcode Project
+      - name: Export PCK only
         run: |
           mkdir -p output
-          ./Godot.app/Contents/MacOS/Godot --headless --path . --export-release iOS output/game.xcodeproj || true
+          ./Godot.app/Contents/MacOS/Godot --headless --path . --export-pack iOS output/game.pck
           ls -la output/
 
-      - name: Build unsigned IPA with xcodebuild
+      - name: Build IPA from template
         run: |
-          cd output
-          xcodebuild -project game.xcodeproj \
-            -scheme game \
-            -configuration Release \
-            -destination generic/platform=iOS \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            ONLY_ACTIVE_ARCH=NO \
-            -derivedDataPath build || true
+          TEMPLATE=~/Library/Application\ Support/Godot/export_templates/4.3.stable/ios.zip
+          unzip -q "$TEMPLATE" -d iostemplate
+          cp output/game.pck iostemplate/godot_ios.pck 2>/dev/null || cp output/game.pck iostemplate/*.pck 2>/dev/null || true
           mkdir -p Payload
-          cp -r build/Build/Products/Release-iphoneos/*.app Payload/ || true
-          zip -r game.ipa Payload || true
-          ls -la
+          cp -r iostemplate/*.app Payload/ 2>/dev/null || true
+          ls -la iostemplate/
+          zip -r output/game.ipa Payload
+          ls -la output/
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
