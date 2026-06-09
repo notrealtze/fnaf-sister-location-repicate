@@ -1,0 +1,25 @@
+name: iOS Export
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  export-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Export Godot iOS project
+        uses: dulvui/godot4-ios-export@v4
+        with:
+          godot-version: "4.3"
+          working-directory: "."
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-export
+          path: "*.ipa"
