@@ -28,10 +28,12 @@ jobs:
       - name: Export iOS
         run: |
           mkdir -p output
-          ./Godot.app/Contents/MacOS/Godot --headless --path . --export-release iOS output/game.ipa || true
+          ./Godot.app/Contents/MacOS/Godot --headless --path . --export-debug iOS output/game.xcodeproj || true
+          ls -la output/
 
-      - name: Upload IPA artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ios-export
+          name: ios-xcode-project
           path: output/
+          if-no-files-found: warn
