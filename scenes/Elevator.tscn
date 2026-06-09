@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://lshfkeydhqek"]
+
+[ext_resource type="Script" uid="uid://dcmc2ps7uj4rl" path="res://scripts/animationgif.gd" id="1_pr5a7"]
+[ext_resource type="Shader" uid="uid://0qsctdkk78vf" path="res://shaders/Elevator.gdshader" id="1_wgbjp"]
+[ext_resource type="Script" uid="uid://co30axsh73yyv" path="res://scripts/mouse.gd" id="2_6qrec"]
+[ext_resource type="AudioStream" uid="uid://dty85yjqdnt7q" path="res://sounds/CrawlingFast.ogg" id="3_ddhle"]
+[ext_resource type="AudioStream" uid="uid://enw4dw7dfcys" path="res://sounds/VentEntry.ogg" id="4_ed5f6"]
+[ext_resource type="AudioStream" uid="uid://bu0sxpsdl4qr8" path="res://sounds/Loop elevator.mp3" id="4_k0ew4"]
+[ext_resource type="Script" uid="uid://d0knlolw5bslp" path="res://scripts/Fps.gd" id="4_ncb6f"]
+[ext_resource type="Script" uid="uid://dpcua2outrayq" path="res://scripts/Captions.gd" id="5_cok0n"]
+[ext_resource type="AudioStream" uid="uid://ob7obrj0u7pu" path="res://sounds/ventexit.ogg" id="5_ed5f6"]
+[ext_resource type="AudioStream" uid="uid://bffs24be1xiw3" path="res://sounds/Night Won.ogg" id="5_vbo5l"]
+[ext_resource type="FontFile" uid="uid://dpwv24igdqakd" path="res://fonts/CourierPrime-Regular.ttf" id="6_8nc63"]
+[ext_resource type="Script" uid="uid://bnfqftfs245nf" path="res://scripts/hand_unit.gd" id="6_ncb6f"]
+[ext_resource type="FontFile" uid="uid://duerer16ydh2c" path="res://fonts/ArsenalSC-Regular.ttf" id="7_de1fd"]
+[ext_resource type="Script" uid="uid://kyi3hpuxence" path="res://scripts/AudioAmbientManager.gd" id="8_tb4qs"]
+[ext_resource type="Texture2D" uid="uid://be4uy3evespk7" path="res://images/dark elevator.png" id="10_etksk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j8nuu"]
+shader = ExtResource("1_wgbjp")
+shader_parameter/strength = 0.46000002185
+shader_parameter/reverse = true
+
+[node name="elevator" type="Node2D" unique_id=2000739613]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=399068043]
+material = SubResource("ShaderMaterial_j8nuu")
+script = ExtResource("1_pr5a7")
+fps = 90.0
+camera_controller_path = NodePath("../GUI")
+ambient_manager = NodePath("../ElevatorAmbient")
+door_hitbox_offset_y = 257.0
+door_hitbox_width = 447.0
+door_hitbox_height = 196.0
+crawl_hold_threshold = 0.0
+crawl_sound = ExtResource("3_ddhle")
+vent_fps = 35.0
+vent_entry_sound = ExtResource("4_ed5f6")
+vent_exit_sound = ExtResource("5_ed5f6")
+night_won_sound = ExtResource("5_vbo5l")
+fade_out_duration = 0.5
+fade_in_duration = 1.0
+
+[node name="GUI" type="Node" parent="." unique_id=1598374169]
+script = ExtResource("2_6qrec")
+cursor_size = Vector2(30.096, 32.097)
+target_node_path = NodePath("../Sprite2D")
+
+[node name="FPS" type="RichTextLabel" parent="GUI" unique_id=1074270832]
+custom_minimum_size = Vector2(0.368, 0)
+offset_left = 33.0
+offset_top = 22.0
+offset_right = 75.0
+offset_bottom = 46.0
+scale = Vector2(1.291, 1.291)
+bbcode_enabled = true
+text = "FPS:"
+script = ExtResource("4_ncb6f")
+
+[node name="Captions" type="RichTextLabel" parent="GUI" unique_id=2027843100]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -0.5
+offset_right = 0.5
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(2.337, 2.337)
+pivot_offset = Vector2(3, 0)
+bbcode_enabled = true
+text = "ftest"
+script = ExtResource("5_cok0n")
+chars_per_second = 20.1
+caption_font = ExtResource("6_8nc63")
+
+[node name="ElevatorAmbient" type="AudioStreamPlayer2D" parent="." unique_id=1269881179]
+stream = ExtResource("4_k0ew4")
+volume_db = 10.0
+autoplay = true
+max_distance = 2861.0
+parameters/looping = true
+script = ExtResource("8_tb4qs")
+
+[node name="hand unit" type="Sprite2D" parent="." unique_id=537129446]
+offset = Vector2(0, 0.277)
+script = ExtResource("6_ncb6f")
+camera_controller_path = NodePath("../GUI")
+caption_manager_path = NodePath("../GUI/Captions")
+current_night = 3
+night_font = ExtResource("7_de1fd")
+dark_elevator_texture = ExtResource("10_etksk")
+keypad_offset_y = -150.0
+hitbox_offset_x = -73.0
+hitbox_offset_y = 250.0
+hitbox_width = 620.0

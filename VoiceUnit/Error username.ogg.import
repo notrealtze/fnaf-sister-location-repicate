@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://brhbbeems0evs"
+path="res://.godot/imported/Error username.ogg-3515fd190adfab58d29709163ec334ae.oggvorbisstr"
+
+[deps]
+
+source_file="res://VoiceUnit/Error username.ogg"
+dest_files=["res://.godot/imported/Error username.ogg-3515fd190adfab58d29709163ec334ae.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
