@@ -25,15 +25,32 @@ jobs:
           unzip -q Godot_v4.3-stable_export_templates.tpz
           mv templates/* ~/Library/Application\ Support/Godot/export_templates/4.3.stable/
 
-      - name: Export iOS
+      - name: Export Xcode Project
         run: |
           mkdir -p output
-          ./Godot.app/Contents/MacOS/Godot --headless --path . --export-debug iOS output/game.xcodeproj || true
+          ./Godot.app/Contents/MacOS/Godot --headless --path . --export-release iOS output/game.xcodeproj || true
           ls -la output/
 
-      - name: Upload artifact
+      - name: Build unsigned IPA with xcodebuild
+        run: |
+          cd output
+          xcodebuild -project game.xcodeproj \
+            -scheme game \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=NO \
+            -derivedDataPath build || true
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/*.app Payload/ || true
+          zip -r game.ipa Payload || true
+          ls -la
+
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: ios-xcode-project
-          path: output/
+          name: ios-ipa
+          path: output/game.ipa
           if-no-files-found: warn
