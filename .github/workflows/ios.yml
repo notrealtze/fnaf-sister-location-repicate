@@ -35,12 +35,22 @@ jobs:
         run: |
           TEMPLATE=~/Library/Application\ Support/Godot/export_templates/4.3.stable/ios.zip
           unzip -q "$TEMPLATE" -d iostemplate
-          cp output/game.pck iostemplate/godot_ios.pck 2>/dev/null || cp output/game.pck iostemplate/*.pck 2>/dev/null || true
+          cp output/game.pck iostemplate/godot_ios.pck
+          cd iostemplate
+          xcodebuild -project godot_ios.xcodeproj \
+            -scheme godot_ios \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            ONLY_ACTIVE_ARCH=NO \
+            -derivedDataPath build 2>&1 | tail -30
           mkdir -p Payload
-          cp -r iostemplate/*.app Payload/ 2>/dev/null || true
-          ls -la iostemplate/
-          zip -r output/game.ipa Payload
-          ls -la output/
+          find build -name "*.app" -exec cp -r {} Payload/ \;
+          ls -la Payload/
+          zip -r ../output/game.ipa Payload
+          ls -la ../output/
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
