@@ -12,14 +12,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Export Godot iOS project
-        uses: dulvui/godot4-ios-export@v1
-        with:
-          godot-version: "4.3"
-          working-directory: "."
+      - name: Download Godot
+        run: |
+          wget -q https://github.com/godotengine/godot-builds/releases/download/4.3-stable/Godot_v4.3-stable_macos.universal.zip
+          unzip -q Godot_v4.3-stable_macos.universal.zip
+          chmod +x Godot.app/Contents/MacOS/Godot
+
+      - name: Download Export Templates
+        run: |
+          mkdir -p ~/Library/Application\ Support/Godot/export_templates/4.3.stable
+          wget -q https://github.com/godotengine/godot-builds/releases/download/4.3-stable/Godot_v4.3-stable_export_templates.tpz
+          unzip -q Godot_v4.3-stable_export_templates.tpz
+          mv templates/* ~/Library/Application\ Support/Godot/export_templates/4.3.stable/
+
+      - name: Export iOS
+        run: |
+          mkdir -p output
+          ./Godot.app/Contents/MacOS/Godot --headless --path . --export-release iOS output/game.ipa || true
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
           name: ios-export
-          path: "*.ipa"
+          path: output/
